@@ -10,9 +10,17 @@ defmodule GenstageExample.Application do
     import Supervisor.Spec, warn: false
 
     children = [
+      {Redix, host: "localhost", port: 8888, name: :redix},
       {GenstageExample.Producer, 0},
       {GenstageExample.ProducerConsumer, []},
-      {GenstageExample.Consumer, []}
+      %{
+        id: 1,
+        start: {GenstageExample.Consumer, :start_link, [[]]}
+      },
+      %{
+        id: 2,
+        start: {GenstageExample.Consumer, :start_link, [[]]}
+      },
     ]
 
     opts = [strategy: :one_for_one, name: GenstageExample.Supervisor]
